@@ -1,6 +1,21 @@
 <div class="body-wrapper">
   <div class="body-header">
-    <button>Spk</button>
+    <button><i class="fa fa-volume-up"></i></button>
     <h2>Read each sentence. Choose the vocabulary word that completes each sentence.</h2>
+  </div>
+  <div class="mcq-container">
+    <div class="question-text">
+      <span>{{currentPageData.questionText}}</span>
+    </div>
+    <div class="option-container">
+      <div class="each-option" *ngFor="let page of currentPageData.options">
+        <div>{{page}}</div>
+        <button><i class="fa fa-play"></i></button>
+      </div>
+      <div class="submit-portion">
+        <button class="reset-button">Reset</button>
+        <button class="ok-button">OK</button>
+      </div>
+    </div>
   </div>
 </div>
