@@ -1,10 +1,12 @@
 .body-wrapper{
     height:560px;
+    background-color: #a7aaac;
     .body-header{
         margin-left: 20px;
         button{
             border-radius: 50px;
-            width: 24px;
+            width: 30px;
+            height: 30px;
         }
         h2{
             display: inline-block;
@@ -30,6 +32,7 @@
         .each-option{
             width: 300px;
             padding: 10px 10px 10px 52px;
+            background-color: #fff;
             border: 1px solid #111;
             border-radius: 54px;
             font-size: 16px;
@@ -44,8 +47,12 @@
                 border: 1px solid #111;
                 top: -6px;
                 left: -4px;
-                background-color:#fff;
+                background-color:#ededed;
                 cursor: pointer;
+                i{
+                    color: #2b8de7;
+                    font-size: 20px;
+                }
                }
                button:focus{
                    outline:none;
@@ -55,6 +62,12 @@
             text-align: right;
             margin-top: 65px;
             margin-right: 18px;
+            button{
+                cursor: pointer;
+            }
+            button:focus{
+                outline: none;
+            }
             .reset-button{
                 margin-right: 20px;
                 padding: 5px 10px;
