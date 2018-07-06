@@ -7,6 +7,32 @@
     }
     .help-button{
         margin-right:5px;
-
     }
+}
+.footer{
+    background-color: #ed1c24;
+    height: 48px;
+    border-top: 5px solid #fabf0f;
+    .footer-elements{
+        text-align: center;
+        padding-top:14px;
+        div{
+            display: inline-block;
+        }
+        .round-incomplete{
+            width: 15px;
+            height: 15px;
+            background-color: #fff;
+            border-radius: 10px;
+            margin:5px;
+        }
+        .current-round{
+            width: 15px;
+            height: 15px;
+            background-color: #fabf0f;
+            border-radius: 10px;
+            margin:5px;
+        }
+    }
+  
 }
