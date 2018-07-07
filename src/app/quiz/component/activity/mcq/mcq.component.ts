@@ -9,13 +9,15 @@ import QuizData from './data';
 export class McqComponent implements OnInit {
   currentPageData: any;
   currentPageNo: number = 1;
-  subRoundPageNumber:number=1;
+  subRoundPageNumber: number = 1;
   attempNo: number = 0;
   quizData: Array<any> = QuizData.quizData;
   currentSet: number;
   nextSet: number;
-  nextSetIndex:number;
+  nextSetIndex: number;
   repeatQs: Boolean = false;
+  highestSetValue: number;
+  lastSet: Boolean = false;
   questionInQueue: Array<any> = [];
 
   currentSelectedOption: string;
@@ -26,13 +28,31 @@ export class McqComponent implements OnInit {
   ngOnInit() {
     this.setScreenNumber();
     this.goToNextQuestion();
+    this.highestSetValue = this.quizData[this.quizData.length - 1].set;
   };
 
-  setScreenNumber(){
-    this.quizData.map((each,index)=>{
-      each.screenNo=index+1;
-      each.attemptState="Not attempted";
+  setScreenNumber() {
+    this.quizData.map((each, index) => {
+      each.screenNo = index + 1;
+      each.attemptState = "Not attempted";
     })
+  }
+
+  checkLastSet():Boolean {
+
+    if((this.currentPageData.questionText.trim()===this.quizData[this.quizData.length-1].questionText.trim()) && (this.currentSet === this.highestSetValue)){
+      return true;
+    }else{
+      return false;
+    }
+
+  }
+
+  quizEndScreen(){
+    if (this.nextSet === 0 && this.lastSet) {
+        console.log('Finished');
+        alert('Finished');
+    }
   }
 
   selectAnswer(selectedOption, idx) {
@@ -48,37 +68,56 @@ export class McqComponent implements OnInit {
 
   repeatQuestion() {
     this.attempNo = 0;
-    // console.log('repeat true', this.currentPageNo);
-    console.log('repeat q:',this.questionInQueue);
+    console.log('repeat q:', this.questionInQueue, this.subRoundPageNumber);
     this.currentPageData = this.randomizeOptions(this.questionInQueue[this.subRoundPageNumber - 1], this.questionInQueue[this.subRoundPageNumber - 1].answer);
-    if(this.questionInQueue.length>1){
+    if (this.questionInQueue.length > 1) {
       this.currentSet = this.questionInQueue[this.subRoundPageNumber - 1].set;
-      this.nextSet = this.questionInQueue[this.subRoundPageNumber].set;
+      // for last element in question queue, nextset becomes nextsetindex
+      if (this.subRoundPageNumber === this.questionInQueue.length) {
+        this.nextSet = this.nextSetIndex;
+      }
+      else {
+        this.nextSet = this.questionInQueue[this.subRoundPageNumber].set;
+      }
     }
-    else{
+
+    else {
       this.currentSet = this.questionInQueue[this.subRoundPageNumber - 1].set;
       this.nextSet = this.nextSetIndex;
     }
-    
-    console.log(this.currentSet,this.nextSet);
+
+    console.log(this.currentSet, this.nextSet);
   }
 
-  roundComplete(){
+  roundComplete() {
     console.log('Round complete');
+    alert('Round complete');
     // Move vault
   }
 
   goToNextQuestion() {
-    this.attempNo=0;
+    if (this.lastSet) {
+      console.log('Finished');
+      alert('Finished');
+      return;
+  }
+    this.attempNo = 0;
     console.log('repeat false');
-    console.log(this.quizData);
+    // console.log(this.quizData);
     this.currentPageData = this.randomizeOptions(this.quizData[this.currentPageNo - 1], this.quizData[this.currentPageNo - 1].answer);
     this.currentSet = this.quizData[this.currentPageNo - 1].set;
-    if(this.currentSet===this.nextSetIndex){
+    if (this.currentSet === this.nextSetIndex) {
       this.roundComplete();
     }
-    this.nextSet = this.quizData[this.currentPageNo].set;
-    this.nextSetIndex=this.currentSet+1;
+    // (this.currentSet === this.highestSetValue) ? this.lastSet = true : this.lastSet = false;
+    if (this.checkLastSet()) {
+      this.lastSet = true;
+      this.nextSet = 0;
+    } else {
+      this.nextSet = this.quizData[this.currentPageNo].set;
+    }
+
+    this.nextSetIndex = this.currentSet + 1;
     // if(this.currentSet=this)
     console.log(this.currentPageData);
   };
@@ -120,22 +159,37 @@ export class McqComponent implements OnInit {
 
 
   checkQuestionSet() {
-    console.log('set:::',this.currentSet,this.nextSet);
-    // if(repeatFlag){
-    //   // if(this.currentSet===this.nextSetIndex)
-    // }else{
-
-    // }
+    console.log('set:::', this.currentSet, this.nextSet);
     if (this.currentSet === this.nextSet) {
-      this.currentPageNo++;
-      setTimeout(() => {
-        this.goToNextQuestion();
-      }, 1200)
+      if (this.repeatQs) {
+        console.log('subround page:', this.subRoundPageNumber);
+        // this.subRoundPageNumber = 0;
+        if (this.subRoundPageNumber < this.questionInQueue.length) {
+          this.subRoundPageNumber++;
+        }
+        else if (this.subRoundPageNumber === this.questionInQueue.length) {
+          this.subRoundPageNumber = 1;
+        }
+
+        setTimeout(() => {
+          this.repeatQuestion();
+        }, 1200)
+      } else {
+        this.currentPageNo++;
+        setTimeout(() => {
+          this.goToNextQuestion();
+        }, 1200)
+      }
+
 
       console.log('same set, set:', this.currentSet)
     }
+    // else if (this.nextSet === 0 && this.lastSet) {
+    //   console.log('Finished');
+    //   alert('Finished');
+    // }
     else {
-      console.log('Different set:', this.nextSet,this.questionInQueue);
+      console.log('Different set:', this.nextSet, this.questionInQueue);
       // For correct all correct set
       if (this.questionInQueue.length === 0) {
         this.currentPageNo++;
@@ -146,6 +200,7 @@ export class McqComponent implements OnInit {
       else {
         // this.repeatQs = true;
         // this.currentPageNo = this.currentPageNo - this.questionInQueue.length;
+        this.subRoundPageNumber = 1;
         setTimeout(() => {
           this.repeatQuestion();
         }, 1200)
@@ -155,53 +210,56 @@ export class McqComponent implements OnInit {
   }
 
   submit() {
-    let spliceIndex:number;
-    let matchedFLag:Boolean=false;
+    let spliceIndex: number;
+    let matchedFLag: Boolean = false;
     if (this.currentSelectedOption === this.currentPageData.options[this.currentPageData.answer]) {
-      if(this.currentPageData.attemptState==='incorrect'){
-        
-        this.questionInQueue.map((each,idx)=>{
-          if(each.questionText===this.currentPageData.questionText){
-            spliceIndex=idx;
+      // when secondd time correct
+      if (this.currentPageData.attemptState === 'incorrect') {
+        this.currentPageData.attemptState = "correct";
+        this.questionInQueue.map((each, idx) => {
+          if (each.questionText === this.currentPageData.questionText) {
+            spliceIndex = idx;
           }
         });
-        this.questionInQueue.splice(spliceIndex,1);
+        // if (this.questionInQueue.length > 0) {
+        this.questionInQueue.splice(spliceIndex, 1);
         console.log(this.questionInQueue);
-        this.repeatQs=true;
+        if (this.questionInQueue.length === 0) {
+          console.log('empty question in queue:', this.questionInQueue);
+          this.repeatQs = false;
+          this.subRoundPageNumber = 1;
+          // this.roundComplete();
+        } else {
+          this.repeatQs = true;
+        }
+        // }
+
         this.checkQuestionSet();
       }
-      else{
+      else {
         console.log('not attempted question made correct');
+        this.currentPageData.attemptState = "correct";
+        console.log('correct');
         this.checkQuestionSet();
       }
-      this.currentPageData.attemptState = "correct";
-      console.log('correct');
-      // this.currentPageNo++;
-     
-      // this.goToNextQuestion();
     } else {
       console.log('incorrect');
-      this.questionInQueue.map((each,idx)=>{
-        if(each.questionText===this.currentPageData.questionText){
-          matchedFLag=true;
-        }
-      });
       if (this.attempNo < 2) {
         this.attempNo++;
         if (this.attempNo === 2) {
-         
-          this.currentPageData.attemptState = "incorrect"
-          if(!matchedFLag){
+          if (this.currentPageData.attemptState === "Not attempted") {
+            this.currentPageData.attemptState = "incorrect";
             this.questionInQueue.push(this.currentPageData);
+            this.repeatQs = false;
           }
-         
+          else {
+            this.repeatQs = true;
+          }
           this.showCorrectAnswer();
-
 
           /**
            * store the incorrect question, to check for vault opening
            */
-
         }
         // this.getCurrentQuestion();
       }
