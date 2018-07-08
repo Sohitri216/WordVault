@@ -13,7 +13,7 @@
         <button #option (click)="selectAnswer(page,i)"><i class="fa fa-play"></i></button>
       </div>
       <div class="submit-portion">
-        <button class="reset-button">Reset</button>
+        <button class="reset-button" (click)="resetQuiz()">Reset</button>
         <button class="ok-button" (click)="submit()">OK</button>
       </div>
     </div>

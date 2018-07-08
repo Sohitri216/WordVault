@@ -1,4 +1,4 @@
-import { Component, ViewChild, ViewChildren, ElementRef, OnInit } from '@angular/core';
+import { Component, ViewChild, ViewChildren, ElementRef, OnInit, Output, EventEmitter } from '@angular/core';
 import QuizData from './data';
 
 @Component({
@@ -19,39 +19,59 @@ export class McqComponent implements OnInit {
   highestSetValue: number;
   lastSet: Boolean = false;
   questionInQueue: Array<any> = [];
-
+  roundLevel:number=1;
   currentSelectedOption: string;
   @ViewChildren('option') option: ElementRef;
   @ViewChildren('optionText') optionText: ElementRef;
+  @Output() messageEvent = new EventEmitter<number>();
   constructor() { }
 
   ngOnInit() {
-    this.setScreenNumber();
+    this.messageEvent.emit(this.roundLevel);
+    this.setAttemptedState();
     this.goToNextQuestion();
     this.highestSetValue = this.quizData[this.quizData.length - 1].set;
   };
 
-  setScreenNumber() {
+  resetQuiz() {
+    // initialize the values for reset
+    this.currentPageNo = 1;
+    this.subRoundPageNumber = 1;
+    this.attempNo = 0;
+    this.repeatQs = false;
+    this.lastSet = false;
+    this.questionInQueue = [];
+    this.roundLevel=1;
+    this.messageEvent.emit(this.roundLevel);
+    //load the first page
+    this.currentPageData = this.randomizeOptions(this.quizData[this.currentPageNo - 1], this.quizData[this.currentPageNo - 1].answer);
+    this.currentSet = this.quizData[this.currentPageNo - 1].set;
+    this.nextSet = this.quizData[this.currentPageNo].set;
+    this.nextSetIndex = this.currentSet + 1;
+    console.log(this.currentPageData);
+    this.setAttemptedState();
+  }
+
+  setAttemptedState() {
     this.quizData.map((each, index) => {
-      each.screenNo = index + 1;
       each.attemptState = "Not attempted";
     })
   }
 
-  checkLastSet():Boolean {
+  checkLastSet(): Boolean {
 
-    if((this.currentPageData.questionText.trim()===this.quizData[this.quizData.length-1].questionText.trim()) && (this.currentSet === this.highestSetValue)){
+    if ((this.currentPageData.questionText.trim() === this.quizData[this.quizData.length - 1].questionText.trim()) && (this.currentSet === this.highestSetValue)) {
       return true;
-    }else{
+    } else {
       return false;
     }
 
   }
 
-  quizEndScreen(){
+  quizEndScreen() {
     if (this.nextSet === 0 && this.lastSet) {
-        console.log('Finished');
-        alert('Finished');
+      console.log('Finished');
+      alert('Finished');
     }
   }
 
@@ -91,6 +111,8 @@ export class McqComponent implements OnInit {
 
   roundComplete() {
     console.log('Round complete');
+    this.roundLevel++;
+    this.messageEvent.emit(this.roundLevel);
     alert('Round complete');
     // Move vault
   }
@@ -100,7 +122,7 @@ export class McqComponent implements OnInit {
       console.log('Finished');
       alert('Finished');
       return;
-  }
+    }
     this.attempNo = 0;
     console.log('repeat false');
     // console.log(this.quizData);

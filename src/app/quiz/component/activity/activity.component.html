@@ -9,11 +9,11 @@
       <button class="close-button">X</button>
     </div>
   </div>
-  <app-mcq></app-mcq>
+  <app-mcq (messageEvent)="receiveMessage($event)"></app-mcq>
   <app-vault></app-vault>
   <div class="footer">
-    <div class="footer-elements">
-      <div class="current-round"></div>
+    <div class="footer-elements" #footerRounds>
+      <div class="round-incomplete"></div>
       <div class="round-incomplete"></div>
       <div class="round-incomplete"></div>
     </div>
