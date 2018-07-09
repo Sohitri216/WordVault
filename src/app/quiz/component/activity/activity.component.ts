@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ViewChildren, ElementRef, AfterViewInit } from '@angular/core';
-
+import { VaultComponent } from "./vault/vault.component";
 
 @Component({
   selector: 'app-activity',
@@ -12,7 +12,12 @@ export class ActivityComponent implements OnInit {
 
   roundVal: number;
   footerElements: any;
+  animDataObj:{
+    start:number,
+    stop:number
+  }
   @ViewChild('footerRounds') footerRounds: ElementRef;
+  @ViewChild (VaultComponent) vault:VaultComponent;
 
   ngOnInit() {
     // console.log('footer:', this.footerRounds.nativeElement.childNodes);
@@ -29,18 +34,19 @@ export class ActivityComponent implements OnInit {
         this.footerElements[i].style = 'background-color: #fff';
       }
     }
-    // this.footerElements.map((each,idx)=>{
-    // console.log(each,idx);
-    // if(idx!==this.roundVal-1){
-    //   each[idx].style='background-color: #fff';
-    // }
-    // })
   }
 
   receiveMessage($event) {
     this.roundVal = $event;
     console.log('message:', this.roundVal);
     this.footerRoundCompletion()
+  }
+
+  receiveAnimData($event){
+    console.log('Anim Data:',$event);
+    // this.vault.animData=$event;
+    this.vault.srcValue=$event.start;
+    this.vault.changeSrc();
   }
 
 }

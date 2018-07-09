@@ -26,6 +26,7 @@ export class McqComponent implements OnInit {
   @ViewChildren('option') option: ElementRef;
   @ViewChildren('optionText') optionText: ElementRef;
   @Output() messageEvent = new EventEmitter<number>();
+  @Output() vaultAnimData = new EventEmitter<object>();
   constructor(private vaultDataService: VaultDataService) { }
 
   ngOnInit() {
@@ -34,7 +35,7 @@ export class McqComponent implements OnInit {
     this.goToNextQuestion();
     this.highestSetValue = this.quizData[this.quizData.length - 1].set;
     // setTimeout(() => {
-   
+
     // }, 0)
   };
 
@@ -239,7 +240,11 @@ export class McqComponent implements OnInit {
   submit() {
     let spliceIndex: number;
     let matchedFLag: Boolean = false;
-    this.vaultDataService.triggerAnimation('moon');
+    this.vaultDataService.animTriggerSub.next('moon');
+    this.vaultAnimData.emit({
+      start:1,
+      stop:10
+    });
     if (this.currentSelectedOption === this.currentPageData.options[this.currentPageData.answer]) {
       // when secondd time correct
       if (this.currentPageData.attemptState === 'incorrect') {

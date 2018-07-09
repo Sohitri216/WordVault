@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { VaultDataService } from '../../../service/vault-data.service';
 import { Subscription } from 'rxjs';
 const ASSETS = "assests/sprite";
@@ -11,18 +11,27 @@ const ASSETS = "assests/sprite";
 })
 export class VaultComponent implements OnInit {
   imgSrc: string;
-  srcValue: number = 2;
+  // srcValue: number = 2;
+  srcValue: number;
   count: number = 1;
   subscription: Subscription;
+  receivedData: any;
+  animData: {
+    start: number,
+    stop: number
+  }
   constructor(private vaultDataService: VaultDataService) { }
 
   ngOnInit() {
     this.imgSrc = 'assets/sprite/lock0001.png';
+    this.receivedData = this.animData;
+    // this.vaultDataService.animTriggerSub.subscribe((res) => {
+    //   console.log('from vault:', res);
+    // });
     // this.changeSrc();
-    this.subscription = this.vaultDataService.animTriggerObs.subscribe((res) => {
-      console.log('from vault:', res);
-    });
   }
+
+
 
   changeSrc() {
     let sourceVal;
@@ -34,7 +43,7 @@ export class VaultComponent implements OnInit {
       if (this.srcValue >= 10) {
         clearInterval(handle);
       }
-    }, 500);
+    }, 200);
 
 
   }
@@ -51,8 +60,8 @@ export class VaultComponent implements OnInit {
     return source;
   }
 
-  ngOnDestroy() {
-    // prevent memory leak when component destroyed
-    this.subscription.unsubscribe();
-  }
+  // ngOnDestroy() {
+  //   // prevent memory leak when component destroyed
+  //   this.subscription.unsubscribe();
+  // }
 }

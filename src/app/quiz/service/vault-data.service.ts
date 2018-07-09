@@ -6,17 +6,15 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class VaultDataService {
 
-  animTriggerSub = new BehaviorSubject('sun');
+  animTriggerSub: BehaviorSubject<string> = new BehaviorSubject("");
 
   animTriggerObs = this.animTriggerSub.asObservable();
   constructor() { }
 
   // Service message commands
-  triggerAnimation(animObj: string) {
-    // setTimeout(() => {
-      this.animTriggerSub.next(animObj);
-    // });
-  }
+  // triggerAnimation(animObj: string) {
+  //     this.animTriggerSub.next(animObj);
+  // }
 
   initVaultService() {
     console.log('from vault service');
