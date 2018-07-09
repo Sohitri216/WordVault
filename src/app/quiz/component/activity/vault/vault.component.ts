@@ -1,71 +1,58 @@
 import { Component, OnInit } from '@angular/core';
+import { VaultDataService } from '../../../service/vault-data.service';
+import { Subscription } from 'rxjs';
 const ASSETS = "assests/sprite";
 
 @Component({
   selector: 'app-vault',
   templateUrl: './vault.component.html',
-  styleUrls: ['./vault.component.scss']
+  styleUrls: ['./vault.component.scss'],
+  providers: [VaultDataService]
 })
 export class VaultComponent implements OnInit {
-  imgSrc: any;
+  imgSrc: string;
   srcValue: number = 2;
-  srcNo: any;
-  imgNum: any;
   count: number = 1;
-  constructor() { }
+  subscription: Subscription;
+  constructor(private vaultDataService: VaultDataService) { }
 
   ngOnInit() {
-    let c=1;
     this.imgSrc = 'assets/sprite/lock0001.png';
-    this.changeSrc();
-    // let handle=setInterval(()=>{
-    //   console.log('in set interval');
-    //   c++;
-    //   if(c===5){
-    //     clearInterval(handle);
-    //   }
-    // },500);
-    
+    // this.changeSrc();
+    this.subscription = this.vaultDataService.animTriggerObs.subscribe((res) => {
+      console.log('from vault:', res);
+    });
   }
 
   changeSrc() {
     let sourceVal;
-    let handle = setInterval(()=>{
+    let handle = setInterval(() => {
       sourceVal = this.appendSrc();
       this.imgSrc = 'assets/sprite/lock' + sourceVal + '.png';
-      // console.log('imgSrc:',this.imgSrc);
       this.srcValue++;
-      // sourceVal=this.appendSrc();
-      console.log('imgSrc:',this.imgSrc);
-      if(this.srcValue>=10){
+      console.log('imgSrc:', this.imgSrc);
+      if (this.srcValue >= 10) {
         clearInterval(handle);
       }
     }, 500);
-    
-    
-  }
 
-  doYourJob(){
-    let sourceVal;
-      console.log('in set interval');
-      
-     
+
   }
 
   appendSrc() {
     let source: string;
-    // while (this.srcValue <= 10) {
-      source = this.srcValue.toString();
-      while (this.count < 4) {
-        source = '0' + source;
-        if (source.length === 4)
-          break;
-      }
-      console.log('sourceVal:', source);
-      return source;
-    // }
+    source = this.srcValue.toString();
+    while (this.count < 4) {
+      source = '0' + source;
+      if (source.length === 4)
+        break;
+    }
+    console.log('sourceVal:', source);
+    return source;
   }
 
-  
-
+  ngOnDestroy() {
+    // prevent memory leak when component destroyed
+    this.subscription.unsubscribe();
+  }
 }

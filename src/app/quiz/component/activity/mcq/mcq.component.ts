@@ -1,10 +1,12 @@
 import { Component, ViewChild, ViewChildren, ElementRef, OnInit, Output, EventEmitter } from '@angular/core';
 import QuizData from './data';
+import { VaultDataService } from '../../../service/vault-data.service';
 
 @Component({
   selector: 'app-mcq',
   templateUrl: './mcq.component.html',
-  styleUrls: ['./mcq.component.scss']
+  styleUrls: ['./mcq.component.scss'],
+  providers: [VaultDataService]
 })
 export class McqComponent implements OnInit {
   currentPageData: any;
@@ -19,18 +21,21 @@ export class McqComponent implements OnInit {
   highestSetValue: number;
   lastSet: Boolean = false;
   questionInQueue: Array<any> = [];
-  roundLevel:number=1;
+  roundLevel: number = 1;
   currentSelectedOption: string;
   @ViewChildren('option') option: ElementRef;
   @ViewChildren('optionText') optionText: ElementRef;
   @Output() messageEvent = new EventEmitter<number>();
-  constructor() { }
+  constructor(private vaultDataService: VaultDataService) { }
 
   ngOnInit() {
     this.messageEvent.emit(this.roundLevel);
     this.setAttemptedState();
     this.goToNextQuestion();
     this.highestSetValue = this.quizData[this.quizData.length - 1].set;
+    // setTimeout(() => {
+   
+    // }, 0)
   };
 
   resetQuiz() {
@@ -41,7 +46,7 @@ export class McqComponent implements OnInit {
     this.repeatQs = false;
     this.lastSet = false;
     this.questionInQueue = [];
-    this.roundLevel=1;
+    this.roundLevel = 1;
     this.messageEvent.emit(this.roundLevel);
     //load the first page
     this.currentPageData = this.randomizeOptions(this.quizData[this.currentPageNo - 1], this.quizData[this.currentPageNo - 1].answer);
@@ -234,6 +239,7 @@ export class McqComponent implements OnInit {
   submit() {
     let spliceIndex: number;
     let matchedFLag: Boolean = false;
+    this.vaultDataService.triggerAnimation('moon');
     if (this.currentSelectedOption === this.currentPageData.options[this.currentPageData.answer]) {
       // when secondd time correct
       if (this.currentPageData.attemptState === 'incorrect') {
