@@ -35,16 +35,17 @@ export class VaultComponent implements OnInit {
 
 
   changeSrc() {
+    debugger;
     let sourceVal;
     let handle = setInterval(() => {
       sourceVal = this.appendSrc();
       this.imgSrc = 'assets/sprite/lock' + sourceVal + '.png';
       this.srcValue++;
       console.log('imgSrc:', this.imgSrc);
-      if (this.srcValue > this.stopRange) {
+      if (this.srcValue > this.stopRange) { 
         clearInterval(handle);
       }
-    }, 200);
+    }, 100);
 
 
   }

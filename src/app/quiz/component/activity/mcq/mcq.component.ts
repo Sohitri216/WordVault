@@ -77,7 +77,7 @@ export class McqComponent implements OnInit {
   quizEndScreen() {
     if (this.nextSet === 0 && this.lastSet) {
       console.log('Finished');
-      alert('Finished');
+      // alert('Finished');
     }
   }
 
@@ -119,14 +119,18 @@ export class McqComponent implements OnInit {
     console.log('Round complete');
     this.roundLevel++;
     this.messageEvent.emit(this.roundLevel);
-    alert('Round complete');
+    // alert('Round complete');
     // Move vault
   }
 
   goToNextQuestion() {
     if (this.lastSet) {
       console.log('Finished');
-      alert('Finished');
+      this.vaultAnimData.emit({
+        start: this.quizData[this.quizData.length-1].animationStartRange,
+        stop: this.quizData[this.quizData.length-1].animationStopRange
+      });
+      // alert('Finished');
       return;
     }
     this.attempNo = 0;
@@ -136,8 +140,8 @@ export class McqComponent implements OnInit {
     if (this.currentSet === this.nextSetIndex) {
       this.roundComplete();
       this.vaultAnimData.emit({
-        start: this.quizData[this.currentSet-1].animationStartRange,
-        stop: this.quizData[this.currentSet-1].animationStopRange
+        start: this.quizData[this.currentPageNo-2].animationStartRange,
+        stop: this.quizData[this.currentPageNo-2].animationStopRange
       });
 
     }
