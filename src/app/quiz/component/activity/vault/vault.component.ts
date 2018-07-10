@@ -14,6 +14,7 @@ export class VaultComponent implements OnInit {
   // srcValue: number = 2;
   srcValue: number;
   count: number = 1;
+  stopRange: number;
   subscription: Subscription;
   receivedData: any;
   animData: {
@@ -40,7 +41,7 @@ export class VaultComponent implements OnInit {
       this.imgSrc = 'assets/sprite/lock' + sourceVal + '.png';
       this.srcValue++;
       console.log('imgSrc:', this.imgSrc);
-      if (this.srcValue >= 10) {
+      if (this.srcValue > this.stopRange) {
         clearInterval(handle);
       }
     }, 200);

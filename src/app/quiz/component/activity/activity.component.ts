@@ -45,7 +45,8 @@ export class ActivityComponent implements OnInit {
   receiveAnimData($event){
     console.log('Anim Data:',$event);
     // this.vault.animData=$event;
-    this.vault.srcValue=$event.start;
+    this.vault.srcValue = $event.start;
+    this.vault.stopRange = $event.stop;
     this.vault.changeSrc();
   }
 
