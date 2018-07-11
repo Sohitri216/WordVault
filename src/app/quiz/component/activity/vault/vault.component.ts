@@ -40,9 +40,9 @@ export class VaultComponent implements OnInit {
       this.srcValue++;
       console.log('imgSrc:', this.imgSrc);
       if (this.srcValue > this.stopRange) { 
-        clearInterval(handle);
         this.rotateDone = true;
         this.rotationComplete.emit(this.rotateDone);
+        clearInterval(handle);
       }
     }, 100);
 
