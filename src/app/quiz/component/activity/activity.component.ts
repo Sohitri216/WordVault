@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ViewChildren, ElementRef, AfterViewInit } from '@angular/core';
 import { VaultComponent } from "./vault/vault.component";
+import { McqComponent } from "./mcq/mcq.component";
 
 @Component({
   selector: 'app-activity',
@@ -12,12 +13,13 @@ export class ActivityComponent implements OnInit {
 
   roundVal: number;
   footerElements: any;
-  animDataObj:{
-    start:number,
-    stop:number
+  animDataObj: {
+    start: number,
+    stop: number
   }
   @ViewChild('footerRounds') footerRounds: ElementRef;
-  @ViewChild (VaultComponent) vault:VaultComponent;
+  @ViewChild(VaultComponent) vault: VaultComponent;
+  @ViewChild(McqComponent) mcq: McqComponent;
 
   ngOnInit() {
     // console.log('footer:', this.footerRounds.nativeElement.childNodes);
@@ -36,14 +38,21 @@ export class ActivityComponent implements OnInit {
     }
   }
 
+  rotationStatus($event) {
+    debugger;
+    if ($event.rotateDone) {
+      console.log('Rotation done');
+    }
+  }
+
   receiveMessage($event) {
     this.roundVal = $event;
     console.log('message:', this.roundVal);
     this.footerRoundCompletion()
   }
 
-  receiveAnimData($event){
-    console.log('Anim Data:',$event);
+  receiveAnimData($event) {
+    console.log('Anim Data:', $event);
     // this.vault.animData=$event;
     this.vault.srcValue = $event.start;
     this.vault.stopRange = $event.stop;

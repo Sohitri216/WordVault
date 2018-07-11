@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input,EventEmitter,Output } from '@angular/core';
 import { VaultDataService } from '../../../service/vault-data.service';
 import { Subscription } from 'rxjs';
 const ASSETS = "assests/sprite";
@@ -17,25 +17,22 @@ export class VaultComponent implements OnInit {
   stopRange: number;
   subscription: Subscription;
   receivedData: any;
+  rotateDone: Boolean = false;
   animData: {
     start: number,
     stop: number
   }
+  @Output() rotationComplete = new EventEmitter<object>();
   constructor(private vaultDataService: VaultDataService) { }
 
   ngOnInit() {
     this.imgSrc = 'assets/sprite/lock0001.png';
     this.receivedData = this.animData;
-    // this.vaultDataService.animTriggerSub.subscribe((res) => {
-    //   console.log('from vault:', res);
-    // });
-    // this.changeSrc();
   }
 
 
 
   changeSrc() {
-    debugger;
     let sourceVal;
     let handle = setInterval(() => {
       sourceVal = this.appendSrc();
@@ -44,6 +41,8 @@ export class VaultComponent implements OnInit {
       console.log('imgSrc:', this.imgSrc);
       if (this.srcValue > this.stopRange) { 
         clearInterval(handle);
+        this.rotateDone = true;
+        this.rotationComplete.emit(this.rotateDone);
       }
     }, 100);
 
@@ -61,9 +60,4 @@ export class VaultComponent implements OnInit {
     console.log('sourceVal:', source);
     return source;
   }
-
-  // ngOnDestroy() {
-  //   // prevent memory leak when component destroyed
-  //   this.subscription.unsubscribe();
-  // }
 }

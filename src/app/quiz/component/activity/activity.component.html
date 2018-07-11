@@ -10,7 +10,7 @@
     </div>
   </div>
   <app-mcq (messageEvent)="receiveMessage($event)" (vaultAnimData)="receiveAnimData($event)"></app-mcq>
-  <app-vault></app-vault>
+  <app-vault (rotationComplete)="rotationStatus($event)"></app-vault>
   <div class="footer">
     <div class="footer-elements" #footerRounds>
       <div class="round-incomplete"></div>
