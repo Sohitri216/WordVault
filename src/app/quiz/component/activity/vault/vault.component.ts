@@ -33,12 +33,13 @@ export class VaultComponent implements OnInit {
 
 
   changeSrc() {
+    // debugger;
     let sourceVal;
     let handle = setInterval(() => {
       sourceVal = this.appendSrc();
       this.imgSrc = 'assets/sprite/lock' + sourceVal + '.png';
       this.srcValue++;
-      console.log('imgSrc:', this.imgSrc);
+      // console.log('imgSrc:', this.imgSrc);
       if (this.srcValue > this.stopRange) { 
         this.rotateDone = true;
         this.rotationComplete.emit(this.rotateDone);

@@ -54,6 +54,6 @@ export default class QuizData {
         answer: 1,
         set: 3,
         animationStartRange: 377,
-        animationStopRange: 454
+        animationStopRange: 456
     }]
 }

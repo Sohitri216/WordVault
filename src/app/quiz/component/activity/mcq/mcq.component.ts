@@ -25,6 +25,8 @@ export class McqComponent implements OnInit {
   currentSelectedOption: string;
   nextQsBlock: Boolean = false;
   repeatQsBlock: Boolean = false;
+  vaultRoundDone: Boolean = false;
+  spliceIndex: number;
   @ViewChildren('option') option: ElementRef;
   @ViewChildren('optionText') optionText: ElementRef;
   @Output() messageEvent = new EventEmitter<number>();
@@ -94,7 +96,9 @@ export class McqComponent implements OnInit {
   repeatQuestion() {
     this.attempNo = 0;
     console.log('repeat q:', this.questionInQueue, this.subRoundPageNumber);
-    this.currentPageData = this.randomizeOptions(this.questionInQueue[this.subRoundPageNumber - 1], this.questionInQueue[this.subRoundPageNumber - 1].answer);
+    this.currentPageData = this.randomizeOptions(this.questionInQueue[this.subRoundPageNumber - 1],
+      this.questionInQueue[this.subRoundPageNumber - 1].answer);
+    console.log('current data from repeat:!!!!!',this.currentPageData)
     if (this.questionInQueue.length > 1) {
       this.currentSet = this.questionInQueue[this.subRoundPageNumber - 1].set;
       // for last element in question queue, nextset becomes nextsetindex
@@ -118,17 +122,17 @@ export class McqComponent implements OnInit {
     console.log('Round complete');
     this.roundLevel++;
     this.messageEvent.emit(this.roundLevel);
+   
     // Move vault
   }
 
   goToNextQuestion() {
     if (this.lastSet) {
       console.log('Finished');
-      // debugger;
-      this.vaultAnimData.emit({
-        start: this.quizData[this.quizData.length - 1].animationStartRange,
-        stop: this.quizData[this.quizData.length - 1].animationStopRange
-      });
+      // this.vaultAnimData.emit({
+      //   start: this.quizData[this.quizData.length - 1].animationStartRange,
+      //   stop: this.quizData[this.quizData.length - 1].animationStopRange
+      // });
       // alert('Finished');
       return;
     }
@@ -138,12 +142,12 @@ export class McqComponent implements OnInit {
     this.currentSet = this.quizData[this.currentPageNo - 1].set;
     if (this.currentSet === this.nextSetIndex) {
       this.roundComplete();
-      // debugger;
-      this.vaultAnimData.emit({
-        start: this.quizData[this.currentPageNo - 2].animationStartRange,
-        stop: this.quizData[this.currentPageNo - 2].animationStopRange
-      });
-
+      // if (!this.vaultRoundDone) {
+      //   this.vaultAnimData.emit({
+      //     start: this.quizData[this.currentPageNo - 2].animationStartRange,
+      //     stop: this.quizData[this.currentPageNo - 2].animationStopRange
+      //   });
+      // }
     }
     if (this.checkLastSet()) {
       this.lastSet = true;
@@ -213,33 +217,58 @@ export class McqComponent implements OnInit {
         }
         this.repeatQsBlock = true;
         this.nextQsBlock = false;
+        if (this.currentPageData.attemptState === 'correct' && !this.checkLastSet() && (this.currentSet !== this.nextSetIndex)) {
+          // if (this.currentSet + 1 !== this.nextSetIndex) {
+            // this.nextQsBlock = false;
+            // this.repeatQsBlock = true;
+            this.vaultAnimData.emit({
+              start: this.currentPageData.animationStartRange,
+              stop: this.currentPageData.animationStopRange
+            });
+          //  }
+        
+        }
+        else {
+          this.currentPageData.attemptState === 'incorrect';
+          // this.nextQsBlock = true;
+          // this.repeatQsBlock = false;
+          setTimeout(() =>{
+            this.checkForRepeat();
+          },1200)
+        }
         // setTimeout(() => {
         //   this.repeatQuestion();
         // }, 1200)
       } else {
         this.currentPageNo++;
-        if (this.currentSet + 1 !== this.nextSetIndex) {
-          if (this.currentPageData.attemptState === 'correct' && !this.checkLastSet()) {
-            this.vaultAnimData.emit({
-              start: this.currentPageData.animationStartRange,
-              stop: this.currentPageData.animationStopRange
-            });
-          }
-        }
-        else {
+        
+       if (this.currentPageData.attemptState === 'correct' && !this.checkLastSet() && (this.currentSet !== this.nextSetIndex)) {
+        // if (this.currentSet + 1 !== this.nextSetIndex) {
+          this.nextQsBlock = true;
           this.repeatQsBlock = false;
           this.vaultAnimData.emit({
             start: this.currentPageData.animationStartRange,
             stop: this.currentPageData.animationStopRange
           });
-        }
+        //  }
+      
+      }
+      else {
+        this.currentPageData.attemptState === 'incorrect';
         this.nextQsBlock = true;
+        this.repeatQsBlock = false;
+        setTimeout(() =>{
+          this.checkForRepeat();
+        },1200)
+      }
        
+
         // setTimeout(() => {
         //   this.goToNextQuestion();
         // }, 1200)
 
       }
+     
       console.log('same set, set:', this.currentSet)
     }
     else {
@@ -247,13 +276,34 @@ export class McqComponent implements OnInit {
       // For correct all correct set
       if (this.questionInQueue.length === 0) {
         this.currentPageNo++;
-        if (this.currentPageData.attemptState === 'correct') {
-          // debugger;
-          this.repeatQsBlock = false;
-          this.nextQsBlock = true;
+        if (this.currentPageData.attemptState === 'correct' && !this.checkLastSet() && (this.currentSet !== this.nextSetIndex)) {
+          if (this.currentSet + 1 !== this.nextSetIndex) {
+            //for round complete repeatation not last question
+            this.repeatQsBlock = false;
+            this.nextQsBlock = true;
+            this.vaultRoundDone = true;
+            this.vaultAnimData.emit({
+              start: this.currentPageData.animationStartRange,
+              stop: this.currentPageData.animationStopRange
+            });
+          } else {
+            this.repeatQsBlock = false;
+            this.nextQsBlock = true;
+            this.vaultRoundDone = false;
+            console.log('Round complete repeatation not last question.');
+            // this.checkForRepeat();
+            // this.goToNextQuestion();
+            this.vaultAnimData.emit({
+              start: this.quizData[this.currentPageNo - 2].animationStartRange,
+              stop: this.quizData[this.currentPageNo - 2].animationStopRange
+            });
+          }
+         
+        }
+        else if (this.currentPageData.attemptState === 'correct' && this.checkLastSet()) {
           this.vaultAnimData.emit({
-            start: this.currentPageData.animationStartRange,
-            stop: this.currentPageData.animationStopRange
+            start: this.quizData[this.quizData.length - 1].animationStartRange,
+            stop: this.quizData[this.quizData.length - 1].animationStopRange
           });
         }
 
@@ -261,21 +311,33 @@ export class McqComponent implements OnInit {
         //increase footer color count
       }
       else {
+        console.log('question length>0');
         this.subRoundPageNumber = 1;
         if (this.currentPageData.attemptState === 'correct') {
+          console.log('go to repeat: correct')
           this.quizData.map((each, idx) => {
             if (each.questionText.trim() === this.currentPageData.questionText.trim()) {
               prevIndex = idx - 1;
             }
           });
-          // debugger;
           this.repeatQsBlock = true;
+          this.vaultRoundDone = false;
           this.nextQsBlock = false;
           this.vaultAnimData.emit({
             start: this.quizData[prevIndex].animationStartRange,
             stop: this.quizData[prevIndex].animationStopRange
           });
         }
+        else if(this.currentPageData.attemptState === 'incorrect'){
+          console.log('go to repeat: incorrect');
+          this.repeatQsBlock = true;
+          this.nextQsBlock = false;
+          setTimeout(() =>{
+            this.checkForRepeat();
+          },1200)
+          
+        }
+        
 
         // setTimeout(() => {
         //   this.repeatQuestion();
@@ -286,11 +348,10 @@ export class McqComponent implements OnInit {
   }
 
   submit() {
-    let spliceIndex: number;
+    // let spliceIndex: number;
     let prevIndex: number;
     let matchedFLag: Boolean = false;
     if (this.currentSelectedOption === this.currentPageData.options[this.currentPageData.answer]) {
-      // debugger;
       // this.vaultAnimData.emit({
       //   start: this.currentPageData.animationStartRange,
       //   stop: this.currentPageData.animationStopRange
@@ -300,10 +361,11 @@ export class McqComponent implements OnInit {
         this.currentPageData.attemptState = "correct";
         this.questionInQueue.map((each, idx) => {
           if (each.questionText === this.currentPageData.questionText) {
-            spliceIndex = idx;
+            this.spliceIndex = idx;
           }
         });
-        this.questionInQueue.splice(spliceIndex, 1);
+        this.questionInQueue.splice(this.spliceIndex, 1);
+        this.subRoundPageNumber--; //Expppppppppppppppppppppppp
         console.log(this.questionInQueue);
         if (this.questionInQueue.length === 0) {
           console.log('empty question in queue:', this.questionInQueue);

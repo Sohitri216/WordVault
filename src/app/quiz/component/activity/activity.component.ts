@@ -39,9 +39,9 @@ export class ActivityComponent implements OnInit {
   }
 
   rotationStatus($event) {
-    console.log('rotation status',$event);
+    // console.log('rotation status',$event);
     if ($event) {
-      console.log('Rotation done');
+      // console.log('Rotation done');
       this.mcq.checkForRepeat();
     }
   }
