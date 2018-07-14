@@ -60,4 +60,8 @@ export class ActivityComponent implements OnInit {
     this.vault.changeSrc();
   }
 
+  initVault($event){
+    this.vault.initVaultImage();
+  }
+
 }

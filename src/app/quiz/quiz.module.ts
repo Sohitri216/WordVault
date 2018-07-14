@@ -5,13 +5,14 @@ import { McqComponent } from './component/activity/mcq/mcq.component';
 import { VaultComponent } from './component/activity/vault/vault.component';
 
 import { VaultDataService } from './service/vault-data.service';
+import {SoundService} from './service/sound.service';
 
 @NgModule({
   imports: [
     CommonModule
   ],
   declarations: [ActivityComponent, McqComponent, VaultComponent],
-  providers: [VaultDataService]
+  providers: [VaultDataService,SoundService]
 })
 export class QuizModule {
 

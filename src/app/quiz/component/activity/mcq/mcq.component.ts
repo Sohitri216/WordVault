@@ -1,12 +1,14 @@
 import { Component, ViewChild, ViewChildren, ElementRef, OnInit, Output, EventEmitter } from '@angular/core';
 import QuizData from './data';
 import { VaultDataService } from '../../../service/vault-data.service';
+import { SoundService } from '../../../service/sound.service';
+const ASSETS = 'assets/audio/'
 
 @Component({
   selector: 'app-mcq',
   templateUrl: './mcq.component.html',
   styleUrls: ['./mcq.component.scss'],
-  providers: [VaultDataService]
+  providers: [VaultDataService, SoundService]
 })
 export class McqComponent implements OnInit {
   currentPageData: any;
@@ -27,12 +29,14 @@ export class McqComponent implements OnInit {
   repeatQsBlock: boolean = false;
   vaultRoundDone: boolean = false;
   spliceIndex: number;
-  disableSubmit:boolean=true;
+  disableSubmit: boolean = true;
   @ViewChildren('option') option: ElementRef;
   @ViewChildren('optionText') optionText: ElementRef;
   @Output() messageEvent = new EventEmitter<number>();
   @Output() vaultAnimData = new EventEmitter<object>();
-  constructor(private vaultDataService: VaultDataService) { }
+  @Output() initVault = new EventEmitter<void>();
+  constructor(private vaultDataService: VaultDataService,
+    private soundService: SoundService) { }
 
   ngOnInit() {
     this.messageEvent.emit(this.roundLevel);
@@ -50,7 +54,7 @@ export class McqComponent implements OnInit {
     this.lastSet = false;
     this.questionInQueue = [];
     this.roundLevel = 1;
-    this.disableSubmit=true;
+    this.disableSubmit = true;
     this.messageEvent.emit(this.roundLevel);
     //load the first page
     this.currentPageData = this.randomizeOptions(this.quizData[this.currentPageNo - 1], this.quizData[this.currentPageNo - 1].answer);
@@ -60,6 +64,7 @@ export class McqComponent implements OnInit {
     console.log(this.currentPageData);
     this.setAttemptedState();
     this.clearSelectedOption();
+    this.initVault.emit();
   }
   /** 
    * Initializes the states as not attempted
@@ -92,7 +97,7 @@ export class McqComponent implements OnInit {
 
 
   selectAnswer(selectedOption, idx) {
-    this.disableSubmit=false;
+    this.disableSubmit = false;
     this.currentSelectedOption = selectedOption;
     let option = this.option['_results'];
     option[idx].nativeElement.style = 'background-color:#fefe00';
@@ -105,7 +110,7 @@ export class McqComponent implements OnInit {
 
   repeatQuestion() {
     this.attempNo = 0;
-    this.disableSubmit=true;
+    this.disableSubmit = true;
     console.log('repeat q:', this.questionInQueue, this.subRoundPageNumber);
     this.currentPageData = this.randomizeOptions(this.questionInQueue[this.subRoundPageNumber - 1],
       this.questionInQueue[this.subRoundPageNumber - 1].answer);
@@ -136,12 +141,12 @@ export class McqComponent implements OnInit {
     // Move vault
   }
 
-  initDisableSubmit(){
-    if(this.currentPageNo===1){
-      this.disableSubmit=true;
+  initDisableSubmit() {
+    if (this.currentPageNo === 1) {
+      this.disableSubmit = true;
     }
-    else{
-      this.disableSubmit=false;
+    else {
+      this.disableSubmit = false;
     }
   }
 
@@ -150,8 +155,8 @@ export class McqComponent implements OnInit {
       console.log('Finished');
       return;
     }
-  //  this.initDisableSubmit();
-   this.disableSubmit=true;
+    //  this.initDisableSubmit();
+    this.disableSubmit = true;
     this.attempNo = 0;
     console.log('repeat false');
     this.currentPageData = this.randomizeOptions(this.quizData[this.currentPageNo - 1], this.quizData[this.currentPageNo - 1].answer);
@@ -332,8 +337,9 @@ export class McqComponent implements OnInit {
   submit() {
     let prevIndex: number;
     let matchedFLag: Boolean = false;
-    this.disableSubmit=true;
+    this.disableSubmit = true;
     if (this.currentSelectedOption === this.currentPageData.options[this.currentPageData.answer]) {
+      this.soundService.playSound(ASSETS + 'Correct.mp3');
       // when secondd time correct
       if (this.currentPageData.attemptState === 'incorrect') {
         this.currentPageData.attemptState = "correct";
@@ -362,6 +368,7 @@ export class McqComponent implements OnInit {
       }
     } else {
       console.log('incorrect');
+      this.soundService.playSound(ASSETS + 'Incorrect.mp3');
       if (this.attempNo < 2) {
         this.attempNo++;
         if (this.attempNo === 2) {

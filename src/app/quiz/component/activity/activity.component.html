@@ -14,7 +14,7 @@
     </div>
   </div>
   <div class="row">
-    <app-mcq (messageEvent)="receiveMessage($event)" (vaultAnimData)="receiveAnimData($event)"></app-mcq>
+    <app-mcq (messageEvent)="receiveMessage($event)" (vaultAnimData)="receiveAnimData($event)" (initVault)=initVault($event)></app-mcq>
     <app-vault (rotationComplete)="rotationStatus($event)"></app-vault>
   </div>
   <div class="footer row">

@@ -26,8 +26,11 @@ export class VaultComponent implements OnInit {
   constructor(private vaultDataService: VaultDataService) { }
 
   ngOnInit() {
+    this.initVaultImage();
+  }
+
+  initVaultImage(){
     this.imgSrc = 'assets/sprite/lock0001.png';
-    this.receivedData = this.animData;
   }
 
 
