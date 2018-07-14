@@ -59,9 +59,6 @@
                     font-size: 20px;
                 }
                }
-               button:focus{
-                //    outline:none;
-               }
                .ok-button:disabled{
                    color: #111 !important;
                    cursor: default !important;
@@ -71,12 +68,9 @@
         .submit-portion{  
             text-align: right;
             margin-top: 65px;
-            margin-right: 18px;
+            margin-right: 65px;
             button{
                 cursor: pointer;
-            }
-            button:focus{
-                // outline: none;
             }
             button:hover{
                 background-color: rgb(6, 10, 63)
@@ -90,7 +84,6 @@
                 font-size: 18px;
                 color: #fff;
                 cursor: pointer;
-                // padding-top:2px;
             }
         }
     }
