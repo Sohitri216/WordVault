@@ -1,5 +1,4 @@
 import { Component, OnInit, Input,EventEmitter,Output } from '@angular/core';
-import { VaultDataService } from '../../../service/vault-data.service';
 import { Subscription } from 'rxjs';
 const ASSETS = "assests/sprite";
 
@@ -7,7 +6,7 @@ const ASSETS = "assests/sprite";
   selector: 'app-vault',
   templateUrl: './vault.component.html',
   styleUrls: ['./vault.component.scss'],
-  providers: [VaultDataService]
+  providers: []
 })
 export class VaultComponent implements OnInit {
   imgSrc: string;
@@ -23,7 +22,7 @@ export class VaultComponent implements OnInit {
     stop: number
   }
   @Output() rotationComplete = new EventEmitter<object>();
-  constructor(private vaultDataService: VaultDataService) { }
+  constructor() { }
 
   ngOnInit() {
     this.initVaultImage();
@@ -36,13 +35,11 @@ export class VaultComponent implements OnInit {
 
 
   changeSrc() {
-    // debugger;
     let sourceVal;
     let handle = setInterval(() => {
       sourceVal = this.appendSrc();
       this.imgSrc = 'assets/sprite/lock' + sourceVal + '.png';
       this.srcValue++;
-      // console.log('imgSrc:', this.imgSrc);
       if (this.srcValue > this.stopRange) { 
         this.rotateDone = true;
         this.rotationComplete.emit(this.rotateDone);
@@ -61,7 +58,7 @@ export class VaultComponent implements OnInit {
       if (source.length === 4)
         break;
     }
-    console.log('sourceVal:', source);
+    // console.log('sourceVal:', source);
     return source;
   }
 }

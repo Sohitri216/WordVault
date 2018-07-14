@@ -4,7 +4,6 @@ import { ActivityComponent } from './component/activity/activity.component';
 import { McqComponent } from './component/activity/mcq/mcq.component';
 import { VaultComponent } from './component/activity/vault/vault.component';
 
-import { VaultDataService } from './service/vault-data.service';
 import {SoundService} from './service/sound.service';
 
 @NgModule({
@@ -12,7 +11,7 @@ import {SoundService} from './service/sound.service';
     CommonModule
   ],
   declarations: [ActivityComponent, McqComponent, VaultComponent],
-  providers: [VaultDataService,SoundService]
+  providers: [SoundService]
 })
 export class QuizModule {
 

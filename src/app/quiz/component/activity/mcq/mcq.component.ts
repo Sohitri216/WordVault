@@ -1,6 +1,5 @@
 import { Component, ViewChild, ViewChildren, ElementRef, OnInit, Output, EventEmitter } from '@angular/core';
 import QuizData from './data';
-import { VaultDataService } from '../../../service/vault-data.service';
 import { SoundService } from '../../../service/sound.service';
 const ASSETS = 'assets/audio/'
 
@@ -8,7 +7,7 @@ const ASSETS = 'assets/audio/'
   selector: 'app-mcq',
   templateUrl: './mcq.component.html',
   styleUrls: ['./mcq.component.scss'],
-  providers: [VaultDataService, SoundService]
+  providers: [SoundService]
 })
 export class McqComponent implements OnInit {
   currentPageData: any;
@@ -35,8 +34,7 @@ export class McqComponent implements OnInit {
   @Output() messageEvent = new EventEmitter<number>();
   @Output() vaultAnimData = new EventEmitter<object>();
   @Output() initVault = new EventEmitter<void>();
-  constructor(private vaultDataService: VaultDataService,
-    private soundService: SoundService) { }
+  constructor(private soundService: SoundService) { }
 
   ngOnInit() {
     this.messageEvent.emit(this.roundLevel);
@@ -86,16 +84,12 @@ export class McqComponent implements OnInit {
     }
 
   }
-  /** 
-   * quiz end screen
-  */
-  quizEndScreen() {
-    if (this.nextSet === 0 && this.lastSet) {
-      console.log('Finished');
-    }
-  }
 
-
+  /**
+   * fetches the option selected by user
+   * @param selectedOption selected option
+   * @param idx index of the selected answer
+   */
   selectAnswer(selectedOption, idx) {
     this.disableSubmit = false;
     this.currentSelectedOption = selectedOption;
@@ -108,13 +102,14 @@ export class McqComponent implements OnInit {
     })
   };
 
+  /** 
+   * repeat questions from present round, before moving to next round
+  */
   repeatQuestion() {
     this.attempNo = 0;
     this.disableSubmit = true;
-    console.log('repeat q:', this.questionInQueue, this.subRoundPageNumber);
     this.currentPageData = this.randomizeOptions(this.questionInQueue[this.subRoundPageNumber - 1],
       this.questionInQueue[this.subRoundPageNumber - 1].answer);
-    console.log('current data from repeat:!!!!!', this.currentPageData)
     if (this.questionInQueue.length > 1) {
       this.currentSet = this.questionInQueue[this.subRoundPageNumber - 1].set;
       // for last element in question queue, nextset becomes nextsetindex
@@ -125,40 +120,28 @@ export class McqComponent implements OnInit {
         this.nextSet = this.questionInQueue[this.subRoundPageNumber].set;
       }
     }
-
     else {
       this.currentSet = this.questionInQueue[this.subRoundPageNumber - 1].set;
       this.nextSet = this.nextSetIndex;
     }
-
-    console.log(this.currentSet, this.nextSet);
   }
-
+  /** 
+   * Completion of current round
+  */
   roundComplete() {
-    console.log('Round complete');
     this.roundLevel++;
     this.messageEvent.emit(this.roundLevel);
-    // Move vault
   }
-
-  initDisableSubmit() {
-    if (this.currentPageNo === 1) {
-      this.disableSubmit = true;
-    }
-    else {
-      this.disableSubmit = false;
-    }
-  }
-
+  /** 
+   * Show next question
+  */
   goToNextQuestion() {
+    // Check for last question
     if (this.lastSet) {
-      console.log('Finished');
       return;
     }
-    //  this.initDisableSubmit();
     this.disableSubmit = true;
     this.attempNo = 0;
-    console.log('repeat false');
     this.currentPageData = this.randomizeOptions(this.quizData[this.currentPageNo - 1], this.quizData[this.currentPageNo - 1].answer);
     this.currentSet = this.quizData[this.currentPageNo - 1].set;
     if (this.currentSet === this.nextSetIndex) {
@@ -172,9 +155,11 @@ export class McqComponent implements OnInit {
     }
 
     this.nextSetIndex = this.currentSet + 1;
-    console.log(this.currentPageData);
   };
 
+  /** 
+   * Clear selected option after each attempt
+  */
   clearSelectedOption() {
     let option = this.option['_results']
     option.map((each, index) => {
@@ -182,6 +167,9 @@ export class McqComponent implements OnInit {
     })
   };
 
+  /** 
+   * Clear selected text color for incorrect
+  */
   clearSelectedText() {
     let optionText = this.optionText['_results'];
     optionText.map((each, index) => {
@@ -189,6 +177,9 @@ export class McqComponent implements OnInit {
     });
   };
 
+  /**
+   * Show correct answer for incorrect attempts
+   */
   showCorrectAnswer() {
     let correctAns = this.currentPageData.options[this.currentPageData.answer];
     let optionText = this.optionText['_results'];
@@ -207,6 +198,9 @@ export class McqComponent implements OnInit {
     this.checkQuestionSet();
   }
 
+  /** 
+   * Check for repeat round or next question
+  */
   checkForRepeat() {
     if (this.nextQsBlock) {
       this.goToNextQuestion();
@@ -216,13 +210,13 @@ export class McqComponent implements OnInit {
     }
   }
 
-
+  /** 
+   * check for set, round, vault animation
+  */
   checkQuestionSet() {
     let prevIndex: number;
-    console.log('set:::', this.currentSet, this.nextSet);
     if (this.currentSet === this.nextSet) {
       if (this.repeatQs) {
-        console.log('subround page:', this.subRoundPageNumber);
         if (this.subRoundPageNumber < this.questionInQueue.length) {
           this.subRoundPageNumber++;
         }
@@ -264,11 +258,8 @@ export class McqComponent implements OnInit {
           }, 1200)
         }
       }
-
-      console.log('same set, set:', this.currentSet)
     }
     else {
-      console.log('Different set:', this.nextSet, this.questionInQueue);
       // For correct all correct set
       if (this.questionInQueue.length === 0) {
         this.currentPageNo++;
@@ -286,7 +277,6 @@ export class McqComponent implements OnInit {
             this.repeatQsBlock = false;
             this.nextQsBlock = true;
             this.vaultRoundDone = false;
-            console.log('Round complete repeatation not last question.');
             this.vaultAnimData.emit({
               start: this.quizData[this.currentPageNo - 2].animationStartRange,
               stop: this.quizData[this.currentPageNo - 2].animationStopRange
@@ -303,10 +293,8 @@ export class McqComponent implements OnInit {
         //increase footer color count
       }
       else {
-        console.log('question length>0');
         this.subRoundPageNumber = 1;
         if (this.currentPageData.attemptState === 'correct') {
-          console.log('go to repeat: correct')
           this.quizData.map((each, idx) => {
             if (each.questionText.trim() === this.currentPageData.questionText.trim()) {
               prevIndex = idx - 1;
@@ -321,7 +309,6 @@ export class McqComponent implements OnInit {
           });
         }
         else if (this.currentPageData.attemptState === 'incorrect') {
-          console.log('go to repeat: incorrect');
           this.repeatQsBlock = true;
           this.nextQsBlock = false;
           setTimeout(() => {
@@ -352,7 +339,6 @@ export class McqComponent implements OnInit {
         this.subRoundPageNumber--; //subround count decreased for mid element correct
         console.log(this.questionInQueue);
         if (this.questionInQueue.length === 0) {
-          console.log('empty question in queue:', this.questionInQueue);
           this.repeatQs = false;
           this.subRoundPageNumber = 1;
         } else {
@@ -361,13 +347,10 @@ export class McqComponent implements OnInit {
         this.checkQuestionSet();
       }
       else {
-        console.log('not attempted question made correct');
         this.currentPageData.attemptState = "correct";
-        console.log('correct');
         this.checkQuestionSet();
       }
     } else {
-      console.log('incorrect');
       this.soundService.playSound(ASSETS + 'Incorrect.mp3');
       if (this.attempNo < 2) {
         this.attempNo++;
@@ -382,7 +365,6 @@ export class McqComponent implements OnInit {
           }
           this.showCorrectAnswer();
         }
-        console.log('prevIndex');
       }
       else {
         this.goToNextQuestion();
