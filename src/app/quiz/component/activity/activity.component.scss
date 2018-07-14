@@ -1,21 +1,41 @@
 .header{
-    border-bottom: 2px solid #111;
-    padding: 20px;
+    padding: 13px 20px;
+    background-color: #ed1c24;
+    border-bottom: 5px solid #fabf0f;
     .main-heading{
         font-size: 20px;
-        margin: 0 !important;
+        margin: 6px !important;
     }
-    .help-button{
+    button:hover{
+        background-color: rgb(6, 10, 63)
+    }
+    .help-button, .close-button{
         margin-right:5px;
+        border-radius: 44px;
+        height: 35px;
+        width: 35px;
+        border:2px solid #fff;
+        background-color: #2475e8;
+        font-size: 18px;
+        color: #fff;
+        cursor: pointer;
+        padding-top:2px;
+    }
+    .close-button{
+        margin-left: 5px;
+    }
+    .nav-button{
+        text-align: center;
     }
 }
 .footer{
     background-color: #ed1c24;
-    height: 48px;
+    // height: 48px;
     border-top: 5px solid #fabf0f;
     .footer-elements{
         text-align: center;
         padding-top:14px;
+        padding-bottom: 3px;
         div{
             display: inline-block;
         }
@@ -36,3 +56,4 @@
     }
   
 }
+

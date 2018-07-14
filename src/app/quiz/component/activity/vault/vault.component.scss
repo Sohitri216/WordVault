@@ -3,3 +3,10 @@
     position: absolute;
     top: 199px;
 }
+
+@media(max-width: 768px){
+    .ipad-adjust{
+        width: 90%;
+        margin-top: 50px;
+    }
+}

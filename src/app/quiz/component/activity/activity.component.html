@@ -1,17 +1,23 @@
-<div class="main-wrapper">
+<div class="main-wrapper container-fluid">
 
-  <div class="header overflow-auto">
-    <div class="float-left">
+  <div class="header row">
+    <div class="col-md-10 col-sm-10">
       <h1 class="main-heading">Your Turn: Vocabulary</h1>
     </div>
-    <div class="float-right">
-      <button class="help-button">?</button>
-      <button class="close-button">X</button>
+    <div class="nav-button col-md-2 col-sm-2">
+      <button class="help-button">
+        <i class="fa fa-question"></i>
+      </button>
+      <button class="close-button">
+        <i class="fa fa-times"></i>
+      </button>
     </div>
   </div>
-  <app-mcq (messageEvent)="receiveMessage($event)" (vaultAnimData)="receiveAnimData($event)"></app-mcq>
-  <app-vault (rotationComplete)="rotationStatus($event)"></app-vault>
-  <div class="footer">
+  <div class="row">
+    <app-mcq (messageEvent)="receiveMessage($event)" (vaultAnimData)="receiveAnimData($event)"></app-mcq>
+    <app-vault (rotationComplete)="rotationStatus($event)"></app-vault>
+  </div>
+  <div class="footer row">
     <div class="footer-elements" #footerRounds>
       <div class="round-incomplete"></div>
       <div class="round-incomplete"></div>

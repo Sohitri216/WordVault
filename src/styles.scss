@@ -8,7 +8,13 @@
 .overflow-auto{
     overflow: auto;
 }
-.main-width{
-    width:962px;
-    margin: 0;
+
+
+button[disabled], html input[disabled]{
+    cursor:  default !important;
+    background-color:#738fb7 !important; 
+}
+button[disabled]:hover{
+    cursor:  default !important;
+    background-color:#738fb7 !important; 
 }

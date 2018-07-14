@@ -5,41 +5,41 @@ export default class QuizData {
         answer: 2,
         set: 1,
         animationStartRange: 1,
-        animationStopRange: 57
+        animationStopRange: 51
     }, {
         questionText: "Meg is my ____ in math.",
         options: ["partner", "special", "danger", "splendid"],
         answer: 0,
         set: 1,
-        animationStartRange: 58,
-        animationStopRange: 114
+        animationStartRange: 52,
+        animationStopRange: 138
     }, {
         questionText: "The queen lives in a ___ castle.",
         options: ["partner", "special", "danger", "splendid"],
         answer: 3,
         set: 2,
-        animationStartRange: 115,
-        animationStopRange: 161
+        animationStartRange: 139,
+        animationStopRange: 168
     }, {
         questionText: "My ___ and I will work together as a team.",
         options: ["partner", "special", "danger", "splendid"],
         answer: 0,
         set: 2,
-        animationStartRange: 162,
-        animationStopRange: 207
+        animationStartRange: 169,
+        animationStopRange: 193
     }, {
         questionText: "The hat is ___ because Gran gave it to me.",
         options: ["partner", "special", "danger", "splendid"],
         answer: 1,
         set: 2,
-        animationStartRange: 208,
-        animationStopRange: 253
+        animationStartRange: 194,
+        animationStopRange: 276
     }, {
         questionText: "Small fish may face ____ in the sea.",
         options: ["partner", "special", "danger", "splendid"],
         answer: 2,
         set: 3,
-        animationStartRange: 254,
+        animationStartRange: 277,
         animationStopRange: 322
     }, {
         questionText: "I thanked my host for a ____ meal.",
@@ -53,7 +53,7 @@ export default class QuizData {
         options: ["partner", "special", "danger", "splendid"],
         answer: 1,
         set: 3,
-        animationStartRange: 377,
+        animationStartRange: 378,
         animationStopRange: 456
     }]
 }

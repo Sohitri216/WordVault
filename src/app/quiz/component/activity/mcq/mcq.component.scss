@@ -2,11 +2,16 @@
     height:560px;
     background-color: #a7aaac;
     .body-header{
-        margin-left: 20px;
+        // margin-left: 20px;
         button{
             border-radius: 50px;
             width: 30px;
             height: 30px;
+            border: 1px solid #dcdcdc;
+            i{
+                color:#2a89e2;
+                font-size: 20px;
+            }
         }
         h2{
             display: inline-block;
@@ -14,6 +19,7 @@
             margin-left: 12px;
             margin-top: 10px;
             margin-bottom: 10px;
+            font-size:20px;
         }
     }
     .question-text{
@@ -26,11 +32,10 @@
     }
     .option-container{    
         float: right;
-        margin-top: 4px;
-        // background-color: gold;
-        margin-right: 26px;
+        margin-top: 50px;
+        // margin-right: 42px;
         .each-option{
-            width: 300px;
+            width: 405px;
             padding: 10px 10px 10px 52px;
             background-color: #fff;
             border: 1px solid #111;
@@ -45,7 +50,7 @@
                 position: absolute;
                 border-radius: 30px;
                 border: 1px solid #111;
-                top: -6px;
+                top: -5px;
                 left: -4px;
                 background-color:#ededed;
                 cursor: pointer;
@@ -56,6 +61,11 @@
                }
                button:focus{
                    outline:none;
+               }
+               .ok-button:disabled{
+                   color: #111 !important;
+                   cursor: default !important;
+                   
                }
         }
         .submit-portion{  
@@ -68,18 +78,47 @@
             button:focus{
                 outline: none;
             }
-            .reset-button{
-                margin-right: 20px;
-                padding: 5px 10px;
-                border-radius: 17px;
-                border: 1px solid #111;
+            button:hover{
+                background-color: rgb(6, 10, 63)
             }
-            .ok-button{
+            .reset-button, .ok-button{
                 margin-right: 20px;
-                padding: 5px 21px;
+                padding: 7px 13px 5px 13px;
                 border-radius: 17px;
-                border: 1px solid #111;
+                border:2px solid #fff;
+                background-color: #2475e8;
+                font-size: 18px;
+                color: #fff;
+                cursor: pointer;
+                // padding-top:2px;
             }
         }
     }
+}
+.width-75{
+    width:75px;
+}
+
+@media (max-width: 768px) {
+    .body-wrapper
+    .body-header{
+        h2{
+            font-size: 18px !important;
+        }
+    } 
+    .option-container{
+        margin-top: 50px !important;
+        .each-option{
+            width: 300px !important;
+        }
+    }
+}
+
+@media (max-width: 1024px) {
+    .option-container{
+        .each-option{
+            width:355px !important;
+        }
+    }
+
 }
