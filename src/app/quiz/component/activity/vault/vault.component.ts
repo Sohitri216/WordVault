@@ -10,7 +10,6 @@ const ASSETS = "assests/sprite";
 })
 export class VaultComponent implements OnInit {
   imgSrc: string;
-  // srcValue: number = 2;
   srcValue: number;
   count: number = 1;
   stopRange: number;
@@ -24,16 +23,23 @@ export class VaultComponent implements OnInit {
   @Output() rotationComplete = new EventEmitter<object>();
   constructor() { }
 
+  /** 
+   * Initialize function
+  */
   ngOnInit() {
     this.initVaultImage();
   }
-
+  /** 
+   * Initialize vault image
+  */
   initVaultImage(){
     this.imgSrc = 'assets/sprite/lock0001.png';
   }
 
 
-
+  /** 
+   * change image src for vault rotation
+  */
   changeSrc() {
     let sourceVal;
     let handle = setInterval(() => {
@@ -46,10 +52,11 @@ export class VaultComponent implements OnInit {
         clearInterval(handle);
       }
     }, 100);
-
-
   }
 
+  /** 
+   * form the image src structure 
+  */
   appendSrc() {
     let source: string;
     source = this.srcValue.toString();
@@ -58,7 +65,6 @@ export class VaultComponent implements OnInit {
       if (source.length === 4)
         break;
     }
-    // console.log('sourceVal:', source);
     return source;
   }
 }

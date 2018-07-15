@@ -215,7 +215,9 @@ export class McqComponent implements OnInit {
   */
   checkQuestionSet() {
     let prevIndex: number;
+    // For same set question
     if (this.currentSet === this.nextSet) {
+      // for repeat question set 
       if (this.repeatQs) {
         if (this.subRoundPageNumber < this.questionInQueue.length) {
           this.subRoundPageNumber++;
@@ -239,8 +241,8 @@ export class McqComponent implements OnInit {
           }, 1200)
         }
       } else {
+        //repeat for wrong answers
         this.currentPageNo++;
-
         if (this.currentPageData.attemptState === 'correct' && !this.checkLastSet() && (this.currentSet !== this.nextSetIndex)) {
           this.nextQsBlock = true;
           this.repeatQsBlock = false;
@@ -259,6 +261,7 @@ export class McqComponent implements OnInit {
         }
       }
     }
+    //for different set questions
     else {
       // For correct all correct set
       if (this.questionInQueue.length === 0) {
@@ -321,6 +324,9 @@ export class McqComponent implements OnInit {
     }
   }
 
+  /** 
+   * submit selected option as answer
+  */
   submit() {
     let prevIndex: number;
     let matchedFLag: Boolean = false;
@@ -374,6 +380,11 @@ export class McqComponent implements OnInit {
 
   };
 
+  /**
+   * 
+   * @param eachObj each question object
+   * @param correctOption correct option answer
+   */
   randomizeOptions(eachObj, correctOption): any {
     let correctIndex: number;
     let optionArray: string[] = eachObj.options;
