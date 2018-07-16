@@ -22,44 +22,54 @@ export class ActivityComponent implements OnInit {
   @ViewChild(McqComponent) mcq: McqComponent;
 
   ngOnInit() {
-    // console.log('footer:', this.footerRounds.nativeElement.childNodes);
     this.footerElements = this.footerRounds.nativeElement.childNodes;
   }
-
+  /** 
+   * change background color on each round completion
+  */
   footerRoundCompletion() {
 
     this.footerElements[this.roundVal - 1].style = 'background-color: #fabf0f';
-    console.log(this.footerElements[1]);
     for (var i = 0; i < this.footerElements.length; i++) {
-      // console.log(this.footerElements[i]);
       if (i !== (this.roundVal - 1)) {
         this.footerElements[i].style = 'background-color: #fff';
       }
     }
   }
 
+  /**
+   * 
+   * @param  $event to check for round completion and trigger mcq component
+   */
   rotationStatus($event) {
-    // console.log('rotation status',$event);
     if ($event) {
-      // console.log('Rotation done');
       this.mcq.checkForRepeat();
     }
   }
 
+  /**
+   * 
+   * @param  $event to check for round completion
+   */
   receiveMessage($event) {
     this.roundVal = $event;
-    console.log('message:', this.roundVal);
     this.footerRoundCompletion()
   }
 
+  /**
+   * 
+   * @param  $event vault opening animation object stating start and stop of the vault images to trigger child vault component src
+   */
   receiveAnimData($event) {
-    console.log('Anim Data:', $event);
-    // this.vault.animData=$event;
     this.vault.srcValue = $event.start;
     this.vault.stopRange = $event.stop;
     this.vault.changeSrc();
   }
 
+  /**
+   * 
+   * @param  $event initialize vault image
+   */
   initVault($event){
     this.vault.initVaultImage();
   }
